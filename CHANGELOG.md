@@ -9,10 +9,11 @@
 
 ### CHANGE 2 — `execute_self_fix()` in self_improve.py
 - New async function: `execute_self_fix(user_id, problem_description, conversation_history)`
-- Calls Claude Code CLI with `--cwd /root` (inherits global MCPs and CLAUDE.md from `/root/`)
-- Writes fix report to `improvements/fix_{timestamp}.md`
-- Pushes fix report to GitHub `minimax-agent-logs` repo
-- Returns GitHub URL to user via Telegram
+- Writes task file to `/root/agent-tasks/pending/fix_{timestamp}.md` and returns immediately
+- The external `task_watcher.py` (systemd service, runs outside Docker) picks it up within 5 seconds
+- task_watcher executes Claude Code CLI with `cwd=/root`, inherits global MCPs
+- task_watcher sends Telegram notification on completion
+- minimax-agent container is NEVER killed by its own fix tasks
 
 ### CHANGE 3a — `save_session_learnings()` in backup.py
 - New async function called after 20 min idle per user
@@ -33,6 +34,14 @@
 - Added `last_message_time = {}` dict per user in main.py
 - `handle_text()` now checks if user was idle >= 20 minutes
 - If idle, triggers `save_session_learnings()` as background task before processing new message
+
+### NEW — task_watcher.py (systemd service, outside Docker)
+- Created `/root/scripts/task_watcher.py` — lightweight async file watcher
+- Monitors `/root/agent-tasks/pending/` every 5 seconds for new .md task files
+- Executes tasks via Claude Code CLI with `cwd=/root`
+- Notifies Fernando via Telegram on success/failure
+- Runs as systemd service: `task-watcher.service`
+- Completely independent of minimax-agent Docker container — container never self-modifies
 
 ---
 

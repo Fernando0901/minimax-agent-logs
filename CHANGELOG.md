@@ -1,6 +1,42 @@
 # Changelog — MiniMax Agent
 
-## 2026-04-04 — Bug fixes + infrastructure (session 2)
+## 2026-04-04 — Addendum 2: Intent routing + self-fix + persistent memory + idle detection
+
+### CHANGE 1 — Intent classifier + router in brain.py
+- Added `classify_intent()` with keyword-based detection ("corrígelo", "fix", "mejora", "bug", "error", etc.)
+- `simple_chat()` now routes "improve" intent to `execute_self_fix()` instead of MiniMax
+- Normal chat still goes to MiniMax M2.7 as before
+
+### CHANGE 2 — `execute_self_fix()` in self_improve.py
+- New async function: `execute_self_fix(user_id, problem_description, conversation_history)`
+- Calls Claude Code CLI with `--cwd /root` (inherits global MCPs and CLAUDE.md from `/root/`)
+- Writes fix report to `improvements/fix_{timestamp}.md`
+- Pushes fix report to GitHub `minimax-agent-logs` repo
+- Returns GitHub URL to user via Telegram
+
+### CHANGE 3a — `save_session_learnings()` in backup.py
+- New async function called after 20 min idle per user
+- Asks MiniMax to summarize conversation into a learning paragraph
+- Appends learning to `memory/agent_memory.md`
+- Pushes updated memory to GitHub `memory/agent_memory.md`
+
+### CHANGE 3b — Memory injection in brain.py
+- Added `get_memory_context()` — reads last 100 lines of `agent_memory.md`
+- `build_system_prompt()` now injects memory section into system prompt
+- Agent always has persistent context from previous sessions
+
+### CHANGE 3c — `memory/agent_memory.md` created
+- New file created at `/root/minimax-agent/memory/agent_memory.md`
+- Contains system knowledge, repeated fixes log, and Fernando's preferences
+
+### CHANGE 4 — Idle detection in main.py
+- Added `last_message_time = {}` dict per user in main.py
+- `handle_text()` now checks if user was idle >= 20 minutes
+- If idle, triggers `save_session_learnings()` as background task before processing new message
+
+---
+
+## 2026-04-04 — Bug fixes + infrastructure (第二次)
 
 ### FIX 1 — APScheduler removed, using python-telegram-bot JobQueue
 - APScheduler thread removed from main.py (was causing "Event loop is running in a different thread" error)
@@ -27,7 +63,6 @@
 ---
 
 ## 2026-04-04 — Initial deployment
-
 - Created full project structure at /root/minimax-agent/
 - Implemented brain.py (MiniMax M2.5 conversation engine)
 - Implemented mcp_manager.py (dynamic MCP registry)

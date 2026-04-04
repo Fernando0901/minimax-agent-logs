@@ -1,3 +1,32 @@
+## 2026-04-04 — Enable web_search, understand_image, image generation via direct API
+
+### PROBLEM
+The minimax-coding-plan-mcp package crashes when run as MCP stdio subprocess (BrokenResourceError in anyio streams during session.initialize). MCP server works standalone but client cannot connect.
+
+### FIX 1 — web_search via direct API
+- direct_web_search() in brain.py → POST /v1/coding_plan/search
+- Added to build_tools_list() and execute_tool_call()
+- Status: WORKING
+
+### FIX 2 — understand_image via direct VLM API
+- direct_understand_image() in brain.py → POST /v1/coding_plan/vlm
+- Local files converted to base64 data URI for VLM API
+- Status: WORKING
+
+### FIX 3 — Image generation with correct endpoint + rate limiting
+- generate_image() now uses POST /v1/image_generation (was /v1/media/generate)
+- Fixed response: data.image_urls[0] (was data[0].url)
+- Daily limit: 50 images tracked in api_usage.json
+- Status: WORKING
+
+### FIX 4 — handle_photo uses understand_image tool
+- handle_photo() saves Telegram photo to temp file, calls execute_tool_call("understand_image", ...)
+- Removed base64 vision_chat path
+
+Files: brain.py, image_handler.py, main.py. Container rebuilt and restarted.
+
+---
+
 # Changelog — MiniMax Agent
 
 ## 2026-04-04 — Addendum 2: Intent routing + self-fix + persistent memory + idle detection

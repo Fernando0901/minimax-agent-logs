@@ -88,7 +88,7 @@ When Fernando sends a message to the MiniMax Telegram bot, a complex chain of sy
                                                                      ▼
                                                   ┌─────────────────────────────────────┐
                                                   │   STEP 7: task_watcher notifies     │
-                                                  │   Telegram message to 8288612046   │
+                                                  │   Telegram message to   │
                                                   │   "✅ Tarea completada" or           │
                                                   │   "❌ Tarea fallida"                 │
                                                   └─────────────────────────────────────┘
@@ -100,7 +100,7 @@ When Fernando sends a message to the MiniMax Telegram bot, a complex chain of sy
 
 ### STEP 1: Telegram Message Received
 
-Fernando sends a message via Telegram to the bot token `@8604821173:AAHmP2ExF77pf3oyIJXt0lCYmOBSW1o62g4`. The message arrives at `main.py` handlers.
+Fernando sends a message via Telegram to the bot token `@`. The message arrives at `main.py` handlers.
 
 **Key files:**
 - `agent/main.py` — Telegram handlers

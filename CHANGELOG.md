@@ -1,5 +1,77 @@
 # Changelog — MiniMax Agent
 
+## 2026-04-05 — Fix execute_self_fix(): improve context for fix tasks
+
+### PROBLEM
+When "corrígelo" triggered execute_self_fix(), it only passed the last 10 conversation items
+with generic "role: content" formatting. Fernando needed clearer labeling (USER vs BOT) and
+more context (7 exchanges = 14 messages) for better Claude Code CLI fix tasks.
+
+### ROOT CAUSE
+Lines 441-446 in agent/self_improve.py:
+- Used `[-10:]` instead of `[-14:]` (7 pairs)
+- Used generic `role: content[:200]` format without distinguishing user/bot
+
+### FILES CHANGED
+1. **agent/self_improve.py** — Modified `execute_self_fix()` context building:
+   - Changed `[-10:]` → `[-14:]` (last 7 user+bot exchanges)
+   - Changed format to `[👤 USER]` for role==user (max 200 chars)
+   - Changed format to `[🤖 BOT]` for role==assistant (max 500 chars)
+
+### VERIFICATION
+- Container rebuilt and healthy (minimax-agent Up 10 seconds (healthy))
+- No breaking changes to imports or function signatures
+- task_watcher.py will pick up any new fix_*.md files with improved context
+
+---
+
+## 2026-04-05 — WORKFLOW AUTOMATION RULE: Never modify existing workflows
+
+### PROBLEM
+When Fernando asked for automation (e.g., "quiero un resumen de noticias"), the bot tried to modify
+"Morning Digest" (ocgpEc41Ez7WLlVQ) instead of proposing a NEW workflow. Fernando explicitly said:
+"No necesitas que actualices mi workflow, solo que redactes un plan para crear un nuevo workflow..."
+
+### ROOT CAUSE
+`build_system_prompt()` in brain.py had no instructions preventing modification of existing workflows.
+The bot had tools to modify workflows but no guidance on WHEN to use them vs. WHEN to propose new ones.
+
+### FILES CHANGED
+1. **agent/brain.py** — Added `## WORKFLOW AUTOMATION (CRITICAL RULE)` section to `build_system_prompt()`:
+   - Never modify existing workflows (especially Morning Digest)
+   - When Fernando asks for automation, propose creating a NEW workflow
+   - Draft the full workflow plan (name, trigger, nodes, purpose)
+   - Tell Fernando to use "corrige" command so Claude Code CLI creates it
+
+2. **memory/agent_memory.md** — Appended session learning documenting this rule permanently
+
+### VERIFICATION
+- Container rebuilt and healthy
+- Future automation proposals will respect: "Propongo crear un NUEVO workflow..." instead of modifying existing
+
+---
+
+## 2026-04-05 — Fix n8n_trigger_workflow: wrong JSON path for workflow nodes
+
+### PROBLEM
+`n8n_trigger_workflow()` was reading `wf_data.get("data", {}).get("nodes", [])` but the n8n API
+returns workflow data under `wf_data.get("workflow", {}).get("nodes", [])`. This caused the
+webhook detection to fail even though Morning Digest - Phase F already has a Webhook Trigger node.
+
+### ROOT CAUSE
+Line 280 in brain.py had incorrect JSON path. The n8n REST API response structure for
+`GET /api/v1/workflows/{id}` wraps workflow data under `"workflow"` key, not `"data"`.
+
+### FILES CHANGED
+1. **agent/brain.py** — Fixed `n8n_trigger_workflow()`: changed
+   `wf_data.get("data", {}).get("nodes", [])` → `wf_data.get("workflow", {}).get("nodes", [])`
+
+### VERIFICATION
+- Container rebuilt and healthy
+- Webhook node detection now works correctly for workflow `ocgpEc41Ez7WLlVQ`
+
+---
+
 ## 2026-04-05 — Fix Wikimedia image URLs + n8n REST API (roadmap_20260405)
 
 ### CHANGE 1 — brain.py: direct_understand_image now downloads external URLs to base64

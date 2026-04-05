@@ -1,5 +1,78 @@
 # Changelog — MiniMax Agent
 
+## 2026-04-05 — Fix Wikimedia image URLs + n8n REST API (roadmap_20260405)
+
+### CHANGE 1 — brain.py: direct_understand_image now downloads external URLs to base64
+- Problem: VLM API rejected Wikimedia CDN URLs with "invalid image URL"
+- Fix: For HTTP URLs, fetch image data with `User-Agent` header, convert to base64 data URI
+- Added `follow_redirects=True` and Wikimedia-compatible `User-Agent` header
+- Local file path handling unchanged
+- **Verify:** T08 PASS — Wikimedia ant image returns 214-char description
+
+### CHANGE 2 — brain.py: n8n_list_workflows + n8n_trigger_workflow now use REST API
+- Problem: n8n MCP endpoint `/mcp-server/http` returned 406 (token audience mismatch)
+- Fix: Switch to n8n REST API (`/api/v1/workflows`) with `X-N8N-API-KEY` header + public API token
+- Added `N8N_REST_API_KEY` to `.env` (public API token)
+- n8n_trigger_workflow: tries `/execute` endpoint first, falls back to webhook URL from workflow data
+- **Verify:** T09 PASS — 27 workflows returned via REST API
+
+### CHANGE 3 — .env: Added N8N_REST_API_KEY
+- Value: public API token (audience: `public-api`) for n8n REST API access
+- Existing `N8N_MCP_TOKEN` (audience: `mcp-server-api`) retained for MCP calls
+
+Container rebuilt. Post-fix diagnostic: 14 PASS, 2 environmental failures (T03/T04/T05: host can't resolve Docker-internal DNS), 1 API flakiness (T07: MiniMax image_gen 2013).
+
+---
+
+## 2026-04-05 — Unify Odoo tools: single odoo_agent tool
+
+### CHANGE 1 — odoo_bridge.py: Fixed agent_chat() endpoint
+- Endpoint was `/agent_chat` (404), corrected to `/agent/chat` (200 OK)
+- Request body now includes `session_id`, `chat_history`, `origen` fields
+- Response correctly extracts `response` field from nested dict
+
+### CHANGE 2 — brain.py: 8 Odoo tools → 1 odoo_agent tool
+- Removed: odoo_search, odoo_get_price, odoo_get_bom, odoo_create_contact,
+  odoo_create_opportunity, odoo_create_quotation, odoo_overdue_activities, odoo_batch_price
+- Added: single `odoo_agent(message)` tool that delegates to the full AI agent
+- execute_tool_call() now passes `user_id` through for session tracking
+- get_odoo_tools_description() updated to reflect single tool
+
+### CHANGE 3 — Odoo bridge simplified
+- agent_chat() now primary interface; all other functions kept as fallbacks
+- /agent/chat correctly handles natural language queries for products, prices, contacts, opportunities
+
+## 2026-04-04 — Expand Odoo tools (8 total) + self-debugging silent queue + n8n direct API
+
+### CHANGE 1 — odoo_bridge.py fully implemented
+All 12 Odoo microservice endpoints now wired in odoo_bridge.py:
+- search(), get_product_price(), get_product_bom()
+- create_contact(), create_opportunity(), update_opportunity()
+- schedule_activity(), create_quotation(), get_overdue_activities()
+- batch_price(), health_check(), agent_chat()
+
+### CHANGE 2 — brain.py: 8 Odoo tools + 2 n8n tools in build_tools_list()
+New Odoo tools: odoo_search, odoo_get_price, odoo_get_bom, odoo_create_contact,
+odoo_create_opportunity, odoo_create_quotation, odoo_overdue_activities, odoo_batch_price
+New n8n tools: n8n_list_workflows, n8n_trigger_workflow (direct REST API, bypass MCP)
+execute_tool_call() fully routed for all 10 new tools.
+odoo_get_price, odoo_get_bom, odoo_search, odoo_create_contact, odoo_create_opportunity,
+odoo_create_quotation, odoo_overdue_activities, odoo_batch_price — all routed to odoo_bridge
+
+### CHANGE 3 — Self-debugging now silent (no more asking Fernando to run docker/logs)
+- Added queue_fix_task() to self_improve.py — writes to /root/agent-tasks/pending/ silently
+- handle_text() exception now calls queue_fix_task() then tells Fernando
+  "Ya lo estoy arreglando automáticamente" — never mentions docker/logs
+- handle_photo() exception same pattern
+- task_watcher.py picks up the fix task automatically (no Fernando intervention needed)
+
+### CHANGE 4 — odoo_bridge.py get_odoo_tools_description() updated
+Now returns description for all 8 Odoo tools (was only 4).
+
+Container rebuilt. Status: healthy.
+
+---
+
 ## 2026-04-04 — Full self-audit: MCP library broken, direct API confirmed working
 
 ### AUDIT FINDING

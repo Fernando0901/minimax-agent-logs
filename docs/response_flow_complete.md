@@ -18,7 +18,7 @@ When Fernando sends a message to the MiniMax Telegram bot, a complex chain of sy
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         STEP 1: Telegram Message                             │
-│                     @ 8604821173:AAHmP2ExF77pf3oyIJXt0lCYmOBSW1o62g4        │
+│                             │
 └──────────────────────────────┬──────────────────────────────────────────────┘
                                │
                                ▼

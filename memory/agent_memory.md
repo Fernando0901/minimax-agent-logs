@@ -52,3 +52,44 @@ _Learnings from interactions are appended below by the agent._
 **Integraciones en su ecosistema:** n8n (workflow "Morning Digest - Phase F" ID `ocgpEc41Ez7WLlVQ`), Odoo CRM, Telegram para notificaciones, GitHub para logs.
 
 **Problema de seguridad resuelto:** GitHub rechazaba pushes con error 409 Conflict porque Secret Scanning detectaba tokens de autenticación en los archivos.
+
+## Session — 2026-04-05 16:34 (User 8288612046)
+<think>
+El usuario me pide que analice esta conversación y extraiga aprendizajes útiles para un agente AI persistente.
+
+Déjame analizar los puntos clave:
+
+1. **Errores del asistente**:
+   - No recordó contexto de conversaciones anteriores (la marca del control remoto)
+   - No detectió la imagen enviada en el chat anterior cuando se le preguntó por la marca
+   - Asumió que no había información previa cuando sí la había en sesiones/contexto pasado
+
+2. **Preferencias del usuario**:
+   - El usuario espera que el asistente recuerde información de sesiones/conversaciones anteriores
+   - Prefiere que se le envíe información estructurada en tablas
+   - El usuario gusta de interacciones informales con emojis
+
+3. **Problemas técnicos detectados**:
+   - Las imágenes no se están conservando entre sesiones o no se están adjuntando correctamente
+   - Hay un gap entre lo que el usuario envía (imagen) y lo que el asistente recibe
+   - Posible problema con MCP image_viewer o con cómo se guardan las conversaciones/imágenes
+
+4. **Lo que funcionó**:
+   - El flujo de búsqueda de contactos funcionó bien
+   - La creación de oportunidad de venta funcionó bien
+   - Cuando el usuario reenvió la imagen correctamente en formato estructurado, el asistente pudo analizarla
+   - La búsqueda web funcionó correctamente
+
+5. **Aprendizajes para el agente persistente**:
+   - Necesita mecanismos para persistir contexto entre sesiones
+   - Debe verificar si las imágenes fueron recibidas correctamente
+   - El formato [{'type': 'image', 'data': 'photo_sent'}, {'type': 'text', 'description}] es el formato correcto para recibir imágenes
+   - Debe ser proactivo en verificar problemas de comunicación/recepción
+   - La auditoría de problemas técnicos es valorada por el usuario
+
+Ahora necesito condensar estos hallazgos en un solo párrafo en español que sea útil para el agente.
+</think>
+
+## Aprendizajes para Agente AI Persistente
+
+**Errores a corregir:** El asistente no recordó el contexto de la marca del control remoto de una sesión anterior, y no detecto correctamente la imagen enviada inicialmente, asumiendo que no existía información previa. **Preferencias del usuario:** El usuario valora la información estructurada en tablas con emojis, respuestas informales y la capacidad del asistente de auditar proactivamente problemas técnicos. **Problemas técnicos detectados:** Existe un gap en la recepción de imágenes adjuntas en el chat — cuando el usuario las envía, el asistente no las detecta automáticamente; sin embargo, el formato estructurado `[{'type': 'image', 'data': '...'}, {'type': 'text', 'description}]` funciona correctamente para enviar imágenes al asistente. **Recomendación:** Implementar verificación proactiva de imágenes adjuntas, mecanismos de persistencia de contexto entre sesiones, y solicitar reenvío en formato estructurado cuando no se detecten correctamente, similar a cómo el usuario demostró que debe hacerse.

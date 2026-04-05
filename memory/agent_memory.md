@@ -39,3 +39,16 @@ _Learnings from interactions are appended below by the agent._
 **Aprendizajes para agente persistente:**
 
 **Empresa del usuario:** Vidrios y Aluminio Guadarrama maneja SOLO vidrio flotado y vidrio templado (no laminado ni otros tipos). **Preferencias:** Quiere notificaciones diarias a las 9am hora México sobre tecnología y China (configurar en n8n workflow `ocgpEc41Ez7WLlVQ`), y recibir logs de su repo `fernando0901/minax-agent-logs` por Telegram después de cada tarea completada. **Limitaciones técnicas:** El agente no puede hacer push directo a GitHub ni ejecutar comandos en sistema de archivos — necesita integración via n8n o funciones externas. **Errores evitados:** No incluir tokens de autenticación en archivos push (causa error 409 Conflict por GitHub Secret Scanning).
+
+## Session — 2026-04-05 06:20 (User 8288612046)
+**Aprendizajes para agente AI persistente:**
+
+**Preferencias del negocio del usuario:** El usuario maneja el negocio "Vidrios y Aluminio Guadarrama" que trabaja **exclusivamente** con vidrio flotado y vidrio templado (NO laminado ni otros tipos). **CRÍTICO:** Toda información sobre este negocio debe ceñirse a estos dos productos sin asumir otros.
+
+**Limitaciones técnicas detectadas:** El agente no tiene capacidad de escribir archivos permanentes ni hacer push a GitHub directamente (sin embargo tiene `git_ops.py` con funciones existentes que no se invocan automáticamente). No hay MCP tools configuradas actualmente.
+
+**Solicitudes pendientes del usuario:** Quiere que se envíe un log a su repositorio GitHub (`fernando0901/minax-agent-logs`) cada vez que se complete una tarea. No tiene implementado este comportamiento aún.
+
+**Integraciones en su ecosistema:** n8n (workflow "Morning Digest - Phase F" ID `ocgpEc41Ez7WLlVQ`), Odoo CRM, Telegram para notificaciones, GitHub para logs.
+
+**Problema de seguridad resuelto:** GitHub rechazaba pushes con error 409 Conflict porque Secret Scanning detectaba tokens de autenticación en los archivos.

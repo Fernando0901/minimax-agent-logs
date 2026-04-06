@@ -21,6 +21,19 @@ _Learnings from interactions are appended below by the agent._
 
 ---
 
+## Session — 2026-04-06 — Fix log_outgoing signature mismatch (session 20260406_180816)
+
+**Root cause:** `audit_logger.log_outgoing()` lacked `response_length` parameter causing `TypeError` on every `handle_text()` call.
+
+**Fix applied:**
+- Added `response_length: Optional[int] = None` to `log_outgoing()` signature in `audit_logger.py`
+- Included `response_length` in JSONL dict (only when explicitly provided — backward compatible)
+- Added startup import-time signature validation block at module load time
+- New test file: `tests/test_audit_logger.py` (4 tests, all passing)
+- Container healthy — no rebuild needed (module reloaded on next `handle_text()` call)
+
+---
+
 ## Session — 2026-04-06 — presupuestador n8n workflow 4 bugs fixed
 
 **4 bugs fixed in LIVE n8n workflow `yljoTtUjCqFuPLW1`:**
@@ -34,6 +47,16 @@ _Learnings from interactions are appended below by the agent._
 **n8n API update:** PUT `/api/v1/workflows/{id}` accepts only: name, nodes, connections, settings (strict), tags, meta. Fields like active, versionId, triggerCount are read-only and cause errors.
 
 **GitHub push:** Resolved rebase conflict by taking --theirs (our fixed version).
+
+---
+
+## Session — 2026-04-06 — Telegram BadRequest: Message is too long fix
+
+**Bug:** `handle_text()` sent MiniMax responses directly to Telegram without checking length. Long in-depth responses (e.g., "Explica a profundidad...") exceeded Telegram's 4096-char limit.
+
+**Fix:** Added `_truncate_for_telegram()` in `main.py` with `"\n\n... (respuesta truncada)"` suffix. Specific `telegram.error.BadRequest` catch added. Startup validation self-tests the helper.
+
+**Files changed:** `agent/main.py`, new `tests/test_telegram_truncation.py`
 
 ---
 
@@ -296,3 +319,12 @@ Revisando nuestra conversación actual:
 - ¿Me proporcionas el **nombre o ID del workflow** para que pueda verificar su estado en n8n?
 
 Así podré ayudarte a rastrear qué pasó. 📋
+
+## Session — 2026-04-06 21:59 (User 8288612046)
+<think>
+Fernando keeps saying "Hey" - it seems like he's just greeting casually. I should keep it friendly and casual, and maybe ask if he has something specific he needs help with or if he wants to continue with something.
+</think>
+
+¡Hola! 👋
+
+¿Todo bien? ¿Necesitas algo o quieres continuar con algún tema? Estoy aquí para ayudarte. 🚀

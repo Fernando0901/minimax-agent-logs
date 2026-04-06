@@ -328,3 +328,91 @@ Fernando keeps saying "Hey" - it seems like he's just greeting casually. I shoul
 ¡Hola! 👋
 
 ¿Todo bien? ¿Necesitas algo o quieres continuar con algún tema? Estoy aquí para ayudarte. 🚀
+
+## Session — 2026-04-06 23:24 (User 8288612046)
+## 🏗️ ILRS e ISRU — Explicación Detallada
+
+---
+
+### 📌 ILRS — International Lunar Research Station (Estación Lunar Internacional de Investigación)
+
+#### ¿Qué es?
+Es un proyecto conjunto entre **China y Rusia** para construir una estación de investigación en la **Luna**, operada conjuntamente por ambos países y abierta a colaboración internacional.
+
+#### Características principales:
+| Aspecto | Detalle |
+|---------|---------|
+| **Socios** | CNSA (China) + Roscosmos (Rusia) |
+| **Ubicación** | Polo Sur lunar (región con agua congelada) |
+| **Tipo** | Base permanente, no tripulada inicialmente |
+| **Objetivo** | Investigación científica, explotación de recursos |
+| **Acceso** | Abierto a otros países vía la organización ILRS |
+
+#### Estructura:
+- **Fase 1 (2030-2035):** Misión de reconocimiento y preparación
+- **Fase 2 (2035-2040):** Construcción de la estación
+- **Fase 3 (2040+):** Estación operativa completa
+
+#### Diferencia con Artemis (EUA):
+| ILRS | Artemis (EUA) |
+|------|---------------|
+| Proyecto bilateral China-Rusia | Proyecto liderado por EUA con aliados |
+| Sin astronauts chinos ni rusos en la Luna aún | Ya tiene astronauts en órbita lunar |
+| Enfocado en investigación a largo plazo | Enfocado en regresar a la superficie lunar |
+| No está abierto a EUA por restricciones | Colaboración limitada con China |
+
+---
+
+### 🔧 ISRU — In-Situ Resource Utilization (Utilización de Recursos In-Situ)
+
+#### ¿Qué es?
+Es la práctica de **usar recursos que ya están disponibles en el lugar** donde te encuentras, en lugar de llevar todo desde la Tierra. Es clave para la exploración espacial sostenible.
+
+#### ¿Por qué importa?
+| Problema | Solución ISRU |
+|----------|---------------|
+| Llevar todo desde la Tierra es CARO | Producir cosas allá = ahorro masivo |
+| Limitado por peso de carga | Usar materiales locales = más autonomía |
+| Misiones cortas por suministro limitado | Misiones LARGAS y permanentes |
+
+#### Aplicaciones concretas:
+1. **🥤 Agua:**
+   - Extraer hielo de los polos lunares
+   - Usar para beber, cultivar plantas, o separar en oxígeno (respirar) + hidrógeno (combustible)
+
+2. **💨 Oxígeno:**
+   - Extraer óxido de aluminio del regolito lunar
+   - Electroólisis para producir O₂
+
+3. **⛏️ Construcción:**
+   - Usar regolito (polvo lunar) para imprimir estructuras 3D
+   - Crear hábitats sin llevar materiales de la Tierra
+
+4. **⛽ Combustible:**
+   - Producir hidrógeno y oxígeno líquidos como propelente
+   - Crear "gasolineras" en el espacio
+
+5. **🧱 Materiales de construcción:**
+   - Tiangong Kaiwu usa ISRU para fabricar estructuras metálicas in situ
+
+#### Impacto:
+- **Reducción de costos:** Cada kg enviado a la Luna cuesta ~$50,000-100,000 USD
+- **Autosuficiencia:** No depender de envíos constantes desde la Tierra
+- **Misiones permanentes:** Hacer viable vivir en la Luna o Marte
+
+---
+
+### 🔗 ¿Cómo se conectan ILRS e ISRU?
+
+ILRS es el **proyecto** (la estación física), e ISRU es la **tecnología** que hará que esa estación funcione de manera sostenible.
+
+```
+ILRS = El QUÉ (la estación lunar)
+ISRU = El CÓMO (cómo hacerla autosuficiente)
+```
+
+China está desarrollando tecnología ISRU específicamente para alimentar el proyecto ILRS, haciendo de Tiangong Kaiwu un laboratorio perfecto para probar estos sistemas.
+
+---
+
+¿Te gustaría que profundice en algún aspecto en particular? 🚀

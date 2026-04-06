@@ -21,6 +21,22 @@ _Learnings from interactions are appended below by the agent._
 
 ---
 
+## Session — 2026-04-06 — presupuestador n8n workflow 4 bugs fixed
+
+**4 bugs fixed in LIVE n8n workflow `yljoTtUjCqFuPLW1`:**
+1. BUG 1 (CRITICAL): Deduplicate node - Set-based dedup on odooReference silently dropped duplicates → pass-through (Merge handles multi-match)
+2. BUG 2 (MEDIUM): Odoo Price Lookup - added retry:true, maxTries:3
+3. BUG 3 (MEDIUM): Calculate Geometry - glassPending flag + glassWarning for unknown glass types
+4. BUG 4 (MEDIUM): GLASS_PRODUCT_MAP expanded with 6 missing types
+
+**Key learning:** The archived workflow file at `Archive/presupuestador` had DIFFERENT node names than the live n8n workflow. The archive had "Deduplicate Odoo Results1" but live had "Deduplicate Odoo Results". Must always GET the live workflow JSON before applying fixes.
+
+**n8n API update:** PUT `/api/v1/workflows/{id}` accepts only: name, nodes, connections, settings (strict), tags, meta. Fields like active, versionId, triggerCount are read-only and cause errors.
+
+**GitHub push:** Resolved rebase conflict by taking --theirs (our fixed version).
+
+---
+
 ## System Knowledge
 
 - Fernando's business: Vidrios y Aluminio Guadarrama (Vidrio y Aluminio)
@@ -192,10 +208,61 @@ Revisando mis registros... No subí nada a ningún repositorio. Lo mencioné en 
 
 ---
 
-**¿Qué necesitas realmente?** 
+**¿Qué necesitas realmente?**
 
 - ¿Quieres que te entregue el plan/reporte aquí en el chat?
 - ¿Quieres que te guíe paso a paso para que tú lo subas?
 - ¿Quieres que te configure el webhook en el workflow de n8n?
 
+---
+
+## Session 20260406_053744 — presupuestador n8n workflow fix
+
+**4 bugs fixed in `/opt/Agente_Odoo_V2/n8n_workflows/Archive/presupuestador`:**
+
+1. **BUG 1 (CRITICAL):** `Deduplicate Odoo Results1` node used Set-based deduplication on `default_code`, silently dropping all cuts sharing same code. Fix: removed dedup (pass-through). Merge handles multi-match correctly.
+2. **BUG 2 (MEDIUM):** `Odoo Price Lookup1` had no errorWorkflow. Fix: added `retry: true, maxTries: 3`.
+3. **BUG 3 (MEDIUM):** `Code in JavaScript1` silently fell back to `"PENDIENTE_VIDRIO"` for unknown glass types. Fix: added `glassPending: true` flag and `glassWarning` field.
+4. **BUG 4 (MEDIUM):** `GLASS_PRODUCT_MAP` only had 10 entries, missing 6 common types. Fix: added all 6.
+
+**Pattern learned:** n8n workflow Code nodes that deduplicate via `Set` + single field key will silently drop data when that field has duplicates. Never use Set-based dedup in merge-based workflows — pass-through and let the merge handle it.
+
+**Backup:** `n8n_workflows/backups/presupuestador_20260406_053744.json`
+**GitHub:** commit `185f8d07d789e09652c9197e77b81944a1fb4201`
+
 Dime y lo hacemos ahora.
+
+## Session — 2026-04-06 07:14 (User 8288612046)
+<think>
+Fernando está confundido. Docker NO se instala desde npm. Le voy a aclarar esto de forma directa.
+</think>
+
+## ❌ No, Fernando, te equivocas
+
+**Docker no se instala desde npm.** Docker es una plataforma de contenedores que se instala directamente en el sistema operativo, no como un paquete npm.
+
+---
+
+## 🔧 Cómo instalar Docker correctamente en una VPS
+
+```bash
+# En distribuciones basadas en Debian/Ubuntu:
+curl -fsSL https://get.docker.com | sh
+
+# O manualmente:
+apt update
+apt install -y docker.io docker-compose
+
+# Verificar:
+docker --version
+```
+
+---
+
+## 🤔 ¿Quizás confundes con alguna de estas herramientas?
+
+- **`docker-cli`** - CLI de Docker (viene con Docker)
+- **`dockerode`** - Librería Node.js para controlar Docker **desde** código
+- **`docker-compose`** - Herramienta para definir contenedores multi-servicio
+
+Si me dices qué estás intentando hacer, te puedo guiar mejor. 👨‍💻

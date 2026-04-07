@@ -416,3 +416,14 @@ China está desarrollando tecnología ISRU específicamente para alimentar el pr
 ---
 
 ¿Te gustaría que profundice en algún aspecto en particular? 🚀
+
+## Session — 2026-04-07 00:29 (User 8288612046)
+<think>
+Fernando está enojado. Antes le di información sobre Tiangong Kaiwu y otros temas aeroespaciales, y parece que está frustrado con algo. Quizás no le gustó cómo le respondí o siente que no le estoy siendo útil.
+
+Debo ser respetuoso y directo, sin reírme ni ser condescendiente. Voy a disculparme y preguntarle directamente qué necesita o qué pasó.
+</think>
+
+Perdón, no me estoy riendo. ¿Qué pasó, Fernando? ¿No te funcionó algo o sientes que no te estoy ayudando bien?
+
+Dime qué necesitas y lo arreglamos.

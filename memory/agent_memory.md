@@ -526,3 +526,21 @@ Ese pipeline automatizado ya se ejecutó y determinó **KEEP** (mantener) con co
 3. Ajuste los umbrales del pipeline para mayor intervención?
 
 Dime cómo procedemos.
+
+## Session — 2026-04-08 00:59 (User 8288612046)
+<think>
+Busqué los workflows de n8n pero no encontré uno que se llame "Fix Pipeline" o algo similar. Solo encontré:
+- "Asistente_Odoo" 
+- "Architectural Bot Supervisor-Worker (Gemini 3 Pro)"
+
+Le informo a Fernando lo que encontré y le pregunto cuál quiere ejecutar.
+</think>
+
+No encontré un workflow llamado "Fix Pipeline" en n8n.
+
+Solo encontré estos workflows activos:
+
+1. **Asistente_Odoo**
+2. **Architectural Bot Supervisor-Worker (Gemini 3 Pro)**
+
+¿Quieres que ejecute alguno de estos? ¿O cómo se llama el pipeline de fix exactamente?

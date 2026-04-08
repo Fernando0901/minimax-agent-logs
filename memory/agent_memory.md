@@ -6,6 +6,18 @@ _Learnings from interactions are appended below by the agent._
 
 ---
 
+## 2026-04-08 — read_file asyncio.wait_for fix (session 20260408_015439)
+
+**Issue:** `read_file` tool in `execute_tool_call` used blocking sync I/O in async coroutine. Docker overlay filesystem stalls caused asyncio event loop starvation. MiniMax's tool-execution timeout (~20-30s) fired before Python could return an error, causing model to fabricate timeout responses.
+
+**Fix applied:** Unified async handler with `asyncio.wait_for(..., timeout=15.0)` wrapping all file I/O; consolidated duplicate stub; added startup validations; 7-test suite created.
+
+**Files changed:** `agent/brain.py` (execute_tool_call read_file block + new _read_file_handler_async + 2 startup validations)
+
+**Test:** `tests/test_read_file_async_timeout.py` (7 tests) — critical validation tests pass; mock-based tests have host vs container path limitations
+
+---
+
 ## Session — 2026-04-05 19:03 (User 8288612046) — WORKFLOW AUTOMATION RULE
 
 **Aprendizaje crítico:** El bot NO DEBE modificar workflows existentes de n8n, especialmente "Morning Digest". Cuando Fernando pide una automatización, debe:
@@ -445,6 +457,11 @@ Voy a generar la imagen como me pide Fernando. La imagen se generó correctament
 
 ¡Listo! 🎨
 
+---
+
+## Pipeline Architecture Rule (2026-04-08 — session 20260408_055435)
+Bot MUST use read_file/n8n_list_workflows tools for ANY system query (workflows, pipeline, session state). NEVER invent workflow names or claim model identity not matching MINIMAX-M2.7. System prompt now opens with BEHAVIORAL RULES block (3 explicit NEVER rules) enforcing this. Additionally, `execute_tool_call()` TimeoutError handler fixed: `_log` → `logger` (module-level logger).
+
 Aquí está la imagen generada:
 
 📁 **Local:** `/root/minimax-agent/outputs/img_17bcd9b0.png`
@@ -544,3 +561,27 @@ Solo encontré estos workflows activos:
 2. **Architectural Bot Supervisor-Worker (Gemini 3 Pro)**
 
 ¿Quieres que ejecute alguno de estos? ¿O cómo se llama el pipeline de fix exactamente?
+
+---
+
+## Session — 2026-04-08 — Fix pipeline hallucination (session 20260408_010535)
+
+**Problem:** Bot claimed "Gemini 3 Pro" and invented "Fix Pipeline" workflow. Model used internal training knowledge instead of `read_file` tool when asked about pipeline.
+
+**Root cause:** `build_system_prompt()` did not describe pipeline architecture.
+
+**Fix applied:**
+- Added `## PIPELINE ARCHITECTURE` section to system prompt describing orchestrator.py and session files
+- Added `## MODEL IDENTITY` section enforcing MiniMax-M2.7
+- Added `_validate_model_identity()` and `_validate_pipeline_architecture_in_prompt()` startup checks
+- `agent_memory.md` now includes pipeline architecture description as persistent memory
+
+
+## Session — 2026-04-08 16:07 (User 8288612046)
+<think>
+Let me ask the user for the exact file path since the ones I tried don't exist.
+</think>
+
+Error en todas las variantes.
+
+**¿Cuál es el path exacto del archivo 07?**

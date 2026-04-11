@@ -6,6 +6,22 @@ _Learnings from interactions are appended below by the agent._
 
 ---
 
+## Pipeline Architecture (updated 2026-04-08)
+The bot now has full 7-agent pipeline knowledge in build_system_prompt():
+- Agent 1: Failure Analyst → 01_failure_trajectory.md
+- Agent 2: Root Cause Finder → 02_root_cause.md
+- Agent 3: Implementation Planner → 03_implementation_plan.md
+- Agent 4: Executor → 04_execution_report.md
+- Agent 5: Results Auditor → 05_audit_verdict.md
+- Agent 6: Decision Maker → 06_decision.md
+- Agent 7: Debug Approver + GitHub Publisher → 07_debug_report.md
+
+Pipeline status queries (contains "agente 7", "sesión del pipeline", "archivo 07", "pipeline status") are classified as 'improve' intent and routed to execute_self_fix context with read_file tool access.
+
+Session files: `/root/minimax-agent/pipeline/sessions/{YYYYMMDD_HHMMSS}/00_trigger.md` through `07_debug_report.md`
+
+---
+
 ## 2026-04-08 — read_file asyncio.wait_for fix (session 20260408_015439)
 
 **Issue:** `read_file` tool in `execute_tool_call` used blocking sync I/O in async coroutine. Docker overlay filesystem stalls caused asyncio event loop starvation. MiniMax's tool-execution timeout (~20-30s) fired before Python could return an error, causing model to fabricate timeout responses.
@@ -585,3 +601,26 @@ Let me ask the user for the exact file path since the ones I tried don't exist.
 Error en todas las variantes.
 
 **¿Cuál es el path exacto del archivo 07?**
+
+## Session — 2026-04-11 23:37 (User 8288612046)
+<think>
+The user is frustrated because the web search tool keeps returning empty results. They're suggesting that the MiniMax API should have a web_search MCP tool, but the results aren't coming through. Let me try one more time with a simpler query about AI news to see if I can get any results.
+</think>
+
+Intentaré una vez más con "noticias de inteligencia artificial":
+
+---
+
+## 🔍 Noticias de IA (prueba de conexión)
+
+Lamentablemente, la herramienta de búsqueda sigue sin devolver resultados. Esto puede deberse a:
+
+1. **Límite de cuota** de la API de búsqueda
+2. **Servicio temporalmente no disponible**
+3. **Configuración MCP** no activa en esta sesión
+
+**Recomendación:** Si tienes un enlace o fuente específica, puedo:
+- Usar `read_file` para archivos locales
+- Usar `browse_url` para extraer contenido de URLs públicas
+
+¿Hay alguna fuente o URL específica que quieras que investigue?

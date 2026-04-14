@@ -624,3 +624,83 @@ Lamentablemente, la herramienta de búsqueda sigue sin devolver resultados. Esto
 - Usar `browse_url` para extraer contenido de URLs públicas
 
 ¿Hay alguna fuente o URL específica que quieras que investigue?
+---
+
+## Pipeline — Agent 2 Trajectory Wait (2026-04-12)
+
+**Issue:** Parallel execution (asyncio.gather) caused Agent 2 to receive empty trajectory → broken prompts with literal placeholder strings → pipeline incomplete sessions (0/3 files). 18 recurrences, 0% success rate historically.
+
+**Fix:** orchestrator.py `_wait_for_trajectory()` — Agent 2 polls for trajectory file readiness (>100 bytes) with 60s timeout before generating prompt. Graceful degradation on timeout. Structured logging.
+
+**Prevention:** New parallel agents must declare explicit dependencies on prior agent outputs.
+
+**Files changed:** pipeline/orchestrator.py (+65 lines)
+**Tests:** tests/test_trajectory_wait.py (5 tests, 3/5 passing)
+**Session:** 20260412_030337
+
+---
+
+## 2026-04-13 — Odoo ACL Error Pattern (schedule_activity HTTP 500)
+**Error class:** APPLICATION_ERROR (HTTP 500 from Odoo ACL restriction)
+**Root cause file:** /opt/Agente_Odoo_V2/Deployment_Package/Microservice/main.py:1263
+**Mechanism:** Odoo user UID 2 lacks mail.activity create permission on crm.lead record 4047
+**No code fix required:** This is an Odoo administration issue
+**Required action:** Odoo admin must grant mail.activity create/write permissions to agent user
+**Probe classification:** Correctly classified as APPLICATION_ERROR — no infrastructure failure alert
+**Secondary issue:** 1000+ "test" crm.lead records — Fernando's data, not agent code defect
+
+
+## Session — 2026-04-14 14:59 (User 8288612046)
+<think>
+The user is asking me to review the logs of agent 2 (root cause analysis). The conversation shows the full output of agent 2 already. Let me summarize the key findings from the root cause analysis.
+</think>
+
+## Agente 2 — Root Cause Analysis
+
+**Archivo:** `/root/minimax-agent/agent/odoo_bridge.py`  
+**Función:** `run_pipeline()` (línea 52)  
+**Línea exacta:** `async for step in pipeline.astuple():`
+
+---
+
+### 🔴 Causa Raíz Identificada
+
+**Conflicto entre `async for` y `enumerate()`**
+
+```python
+# ❌ CÓDIGO ACTUAL (línea 59)
+for i, step in enumerate(async_gen):  # ← Mal: mezcla sync-for con async-gen
+
+# ✅ CORRECCIÓN
+i = 0
+async for step in pipeline.astuple():  # ← Bien: async for con async iterable
+    step_number = i
+    i += 1
+```
+
+El `pipeline.astuple()` es un **async generator** (retorna `AsyncGenerator[dict, None]`), pero se consume con un `for` síncrono, lo que hace que el `asyncio.sleep()` interno **nunca se ejecute** y los steps se procesen instantáneamente sin respetar delays.
+
+### 📊 Impacto Confirmado
+
+| Síntoma | Causa |
+|---------|-------|
+| `total_duration ≈ 0` | El `async for` permite que `time.monotonic()` capture los delays reales |
+| `step_count` impreciso | Con `enumerate` la iteración síncrona no cuenta correctamente los steps |
+| Tests fallando | El pipeline corre tan rápido que no hay tiempo para que los mocks funcionen |
+
+---
+
+### 🔧 Fix Recomendado
+
+```python
+# Reemplazar línea 59 de odoo_bridge.py
+i = 0
+async for step in pipeline.astuple():
+    step_number = i
+    i += 1
+    # ... resto del código ...
+```
+
+---
+
+¿Quieres que ejecute el fix automáticamente o prefieres revisarlo primero? 🚀

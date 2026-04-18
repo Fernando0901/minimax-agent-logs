@@ -720,3 +720,99 @@ No tengo una herramienta específica de paginación. Cuando genero respuestas la
 Las herramientas que tengo disponibles son las que ves en el panel izquierdo. Para manejar respuestas largas, simplemente las genero en un solo bloque.
 
 ¿Hay algo específico que quieras que ajuste o algún límite que estés experimentando?
+
+## Session — 2026-04-18 21:29 (User 8288612046)
+<think>
+Fernando wants me to explain how the pipeline works and what each of the 7 agents does. Let me provide a clear explanation.
+</think>
+
+## Pipeline — Sistema de 7 Agentes 🔄
+
+El pipeline es un **sistema de autoreparación automática**. Se activa cuando dices **"corrígelo"** o cuando detects un error en el bot.
+
+---
+
+### Los 7 Agentes en secuencia:
+
+| # | Agente | Rol | Herramienta que usa |
+|---|--------|-----|---------------------|
+| **1** | **Failure Analyst** | Detecta y documenta el error | Escribe `01_failure_trajectory.md` |
+| **2** | **Code Root Cause Analyzer** | Analiza la causa raíz en el código | Lee logs, archivos, `01_failure_trajectory.md` |
+| **3** | **Fix Strategist** | Propone estrategias de solución | Lee `01_failure_trajectory.md`, análisis del agente 2 |
+| **4** | **Coder** | Implementa la solución | Edita archivos `.py`, `.json`, `.md` |
+| **5** | **Tester** | Verifica que el fix funcione | Lee `01_failure_trajectory.md`, ejecuta comandos |
+| **6** | **Documentation Updater** | Actualiza documentación | Edita `README.md`, docs, CHANGELOG |
+| **7** | **Deployer** | Despliega cambios | Git push, restart del bot |
+
+---
+
+### Flujo simplificado:
+
+```
+User dice "corrígelo" o detecta error
+    ↓
+Agente 1: Documentar error → 01_failure_trajectory.md
+    ↓
+Agente 2: Analizar causa raíz
+    ↓
+Agente 3: Planificar estrategia de fix
+    ↓
+Agente 4: Implementar código
+    ↓
+Agente 5: Probar que funcione
+    ↓
+Agente 6: Actualizar docs
+    ↓
+Agente 7: Desplegar cambios
+```
+
+---
+
+### Ejemplo rápido:
+
+```
+Tú: "El bot no responde a /start"
+    ↓
+Agente 1 detecta: "Handler de /start no registrado"
+    ↓
+Agente 2 encuentra: "Falta @bot.command_handler en main.py línea 45"
+    ↓
+Agente 3 propone: "Agregar el handler faltante"
+    ↓
+Agente 4 escribe el código del fix
+    ↓
+Agente 5 prueba: "Ahora /start responde ✓"
+    ↓
+Agente 6 actualiza README
+    ↓
+Agente 7 hace git push y reinicia el bot
+```
+
+---
+
+### ¿Dónde ves el progreso?
+
+Cada agente escribe su trabajo en archivos `.md` dentro de `/logs/`:
+
+```
+/logs/
+├── 01_failure_trajectory.md   ← Qué falló
+├── 02_root_cause.md          ← Por qué falló  
+├── 03_fix_strategy.md        ← Cómo se arreglará
+├── 04_fix_implementation.md  ← Código escrito
+├── 05_test_results.md        ← Veredicto de pruebas
+├── 06_documentation.md       ← Docs actualizadas
+└── 07_deploy_results.md      ← Deploy completado
+```
+
+---
+
+### Activación del pipeline:
+
+El pipeline se activa de **3 formas**:
+
+1. **Tú lo pides**: `corrígelo`, `arregla el bot`, `fix it`
+2. **Agente 1 detecta un error** automáticamente durante su análisis
+3. **El propio bot reporta un error** (vía logs o webhook)
+
+¿Tienes alguna pregunta sobre un agente específico o el flujo?

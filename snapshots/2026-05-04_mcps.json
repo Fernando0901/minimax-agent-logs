@@ -1,0 +1,97 @@
+{
+  "mcps": [
+    {
+      "name": "n8n",
+      "transport": "http",
+      "url": "https://n8n.vag131999.cloud/mcp-server/http",
+      "headers": {
+        "Authorization": "[REDACTED]"
+      },
+      "enabled": true
+    },
+    {
+      "name": "minimax_coding",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "minimax-coding-plan-mcp",
+        "-y"
+      ],
+      "env": {
+        "MINIMAX_API_KEY": "[REDACTED]",
+        "MINIMAX_API_HOST": "${MINIMAX_API_HOST}"
+      },
+      "enabled": true
+    },
+    {
+      "name": "minimax_media",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "minimax-mcp",
+        "-y"
+      ],
+      "env": {
+        "MINIMAX_API_KEY": "[REDACTED]",
+        "MINIMAX_API_HOST": "${MINIMAX_API_HOST}",
+        "MINIMAX_MCP_BASE_PATH": "/root/minimax-agent/outputs",
+        "MINIMAX_API_RESOURCE_MODE": "local"
+      },
+      "enabled": true
+    },
+    {
+      "name": "minimax_search",
+      "transport": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/MiniMax-AI/minimax_search.git",
+        "minimax-search"
+      ],
+      "env": {
+        "MINIMAX_API_KEY": "[REDACTED]"
+      },
+      "enabled": true
+    },
+    {
+      "name": "hostinger",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "hostinger-api-mcp@latest"
+      ],
+      "env": {
+        "API_TOKEN": "[REDACTED]"
+      },
+      "enabled": true
+    },
+    {
+      "name": "context7",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "playwright",
+      "transport": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "github",
+      "transport": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "[REDACTED]"
+      },
+      "enabled": true
+    }
+  ]
+}
